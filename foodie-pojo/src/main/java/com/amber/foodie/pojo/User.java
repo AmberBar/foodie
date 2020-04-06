@@ -1,9 +1,10 @@
+
 package com.amber.foodie.pojo;
 
 import javax.persistence.*;
 import java.util.Date;
 
-public class Users {
+public class User {
     /**
      * 主键id 用户id
      */

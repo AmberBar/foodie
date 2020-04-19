@@ -29,3 +29,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+## 
+*rebel.xml
+*rebel-remote.xml
+*bak
+mvnw.cmd
+mvnw.cmd
+mvnw
+.mvn/wrapper/MavenWrapperDownloader.java
+.mvn/wrapper/maven-wrapper.jar

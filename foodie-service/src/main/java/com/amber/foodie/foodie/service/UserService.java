@@ -6,9 +6,26 @@ import com.amber.foodie.pojo.bo.UserBO;
 import java.util.List;
 
 public interface UserService {
-    List<User> getUsers();
 
+    /**
+     * 判断用户名是否存在
+     * @param username
+     * @return
+     */
     User findByUsername(String username);
 
+    /**
+     * 注册用户名
+     * @param userBO
+     * @return
+     */
     int createUser(UserBO userBO);
+
+    /**
+     * 通过用户名和密码查找用户
+     * @param username
+     * @param password
+     * @return
+     */
+    User queryUserByUsernameAndPassword(String username, String password);
 }

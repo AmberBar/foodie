@@ -7,6 +7,7 @@ import com.amber.foodie.pojo.Carousel;
 import com.amber.foodie.pojo.Category;
 import com.amber.foodie.pojo.enums.YesOrNo;
 import com.amber.foodie.pojo.vo.CategoryVo;
+import com.amber.foodie.pojo.vo.NewItemsVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,27 +52,24 @@ public class IndexController {
     @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
     @GetMapping("/subCat/{rootCatId}")
     public JsonResult subCat(@ApiParam(name = "rootCatId", value = "一级分类id", required = true)
-            @PathVariable Integer rootCatId) {
+                             @PathVariable Integer rootCatId) {
         if (rootCatId == null) {
             return JsonResult.errorMsg("分类不存在");
         }
         List<CategoryVo> list = categoryService.querySubCat(rootCatId);
         return JsonResult.ok(list);
     }
-//
-//
-//
-//    @ApiOperation(value = "查询每个一级分类下的最新6条商品数据", notes = "查询每个一级分类下的最新6条商品数据", httpMethod = "GET")
-//    @GetMapping("/sixNewItems/{rootCatId}")
-//
-//    public JsonResult sixNewItems(
-//            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
-//            @PathVariable Integer rootCatId) {
-//        if (rootCatId == null) {
-//            return JsonResult.errorMsg("分类不存在");
-//        }
-//        List<NewItemsVo> list = categoryService.getNewItems(rootCatId);
-//        return JsonResult.ok(list);
-//    }
+
+    @ApiOperation(value = "查询每个一级分类下的最新6条商品数据", notes = "查询每个一级分类下的最新6条商品数据", httpMethod = "GET")
+    @GetMapping("/sixNewItems/{rootCatId}")
+    public JsonResult sixNewItems(
+            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+            @PathVariable Integer rootCatId) {
+        if (rootCatId == null) {
+            return JsonResult.errorMsg("分类不存在");
+        }
+        List<NewItemsVo> list = categoryService.getNewItems(rootCatId);
+        return JsonResult.ok(list);
+    }
 
 }

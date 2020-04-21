@@ -3,9 +3,9 @@ package com.amber.foodie.foodie.service.impl;
 import com.amber.foodie.foodie.service.ICategoryService;
 import com.amber.foodie.mapper.CategoryMapper;
 import com.amber.foodie.mapper.customer.CategoryMapperCustomer;
-import com.amber.foodie.pojo.Carousel;
 import com.amber.foodie.pojo.Category;
 import com.amber.foodie.pojo.vo.CategoryVo;
+import com.amber.foodie.pojo.vo.NewItemsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +36,10 @@ public class CategoryServieImpl implements ICategoryService {
         return categoryMapperCustomerl.getSubCatList(fatherId);
     }
 
-//    @Override
-//    public List<NewItemsVo> getNewItems(Integer fatherId) {
-//        HashMap map=new HashMap();
-//        map.put("rootCartId",fatherId);
-//        return baseMapper.getNewItems(map);
-//    }
+    @Override
+    public List<NewItemsVo> getNewItems(Integer fatherId) {
+        HashMap map=new HashMap();
+        map.put("rootCartId",fatherId);
+        return categoryMapperCustomerl.getNewItems(map);
+    }
 }

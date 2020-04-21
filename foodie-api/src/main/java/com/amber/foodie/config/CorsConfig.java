@@ -1,15 +1,11 @@
 package com.amber.foodie.config;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @NoArgsConstructor

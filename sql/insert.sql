@@ -30,3 +30,30 @@ insert into category (id, name, type, father_id)  values (50,"手撕面包",3, 1
 
 insert into category (id, name, type, father_id)  values (12,"点心",2, 1);
 insert into category (id, name, type, father_id)  values (11,"蛋糕",2, 1);
+
+
+-- 商品
+INSERT INTO `items` (`id`, `item_name`, `cat_id`, `root_cat_id`, `sell_counts`, `on_off_status`, `content`, `created_time`, `updated_time`) VALUES ('cake-1005', '【天天吃货】进口美食凤梨酥', '1', '0', '0', '66', 'hahah', '2020-04-23', '2020-04-23');
+INSERT INTO `foodie`.`items_img` (`id`, `item_id`, `url`, `sort`, `is_main`, `created_time`, `updated_time`) VALUES ('1', 'cake-1005', 'http://122.152.205.72:88/foodie/cake-1005/img1.png', '1', '1', '2020-04-23 00:00:00', '2020-04-23 00:00:00');
+UPDATE `foodie`.`items` SET `cat_id` = '11', `root_cat_id` = '1' WHERE (`id` = 'cake-1005');
+
+INSERT INTO `items` (`id`, `item_name`, `cat_id`, `root_cat_id`, `sell_counts`, `on_off_status`, `content`, `created_time`, `updated_time`) VALUES ('cake-1006', '【天天吃货】机器猫最爱 铜锣烧 最美下午茶', '1', '0', '0', '66', 'hahah', '2020-04-23', '2020-04-23');
+INSERT INTO `items_img` (`id`, `item_id`, `url`, `sort`, `is_main`, `created_time`, `updated_time`) VALUES ('2', 'cake-1006', 'http://122.152.205.72:88/foodie/cake-1006/img2.png', '1', '1', '2020-04-23 00:00:00', '2020-04-23 00:00:00');
+UPDATE `foodie`.`items` SET `cat_id` = '11', `root_cat_id` = '1' WHERE (`id` = 'cake-1006');
+
+INSERT INTO `items` (`id`, `item_name`, `cat_id`, `root_cat_id`, `sell_counts`, `on_off_status`, `content`, `created_time`, `updated_time`) VALUES ('cake-1001', '【天天吃货】真香预警 超级好吃 手撕面包 儿童早餐早饭', '11', '1', '0', '66', 'hahah', '2020-04-23', '2020-04-23');
+INSERT INTO `items_img` (`id`, `item_id`, `url`, `sort`, `is_main`, `created_time`, `updated_time`) VALUES ('3', 'cake-1001', 'http://122.152.205.72:88/foodie/cake-1001/img1.png', '1', '1', '2020-04-23 00:00:00', '2020-04-23 00:00:00');
+
+INSERT INTO `items` (`id`, `item_name`, `cat_id`, `root_cat_id`, `sell_counts`, `on_off_status`, `content`, `created_time`, `updated_time`) VALUES ('cake-1002', '【天天吃货】网红烘焙蛋糕 好吃的蛋糕', '11', '1', '0', '66', 'hahah', '2020-04-23', '2020-04-23');
+INSERT INTO `items_img` (`id`, `item_id`, `url`, `sort`, `is_main`, `created_time`, `updated_time`) VALUES ('4', 'cake-1007', 'http://122.152.205.72:88/foodie/cake-1002/img1.png', '1', '1', '2020-04-23 00:00:00', '2020-04-23 00:00:00');
+
+INSERT INTO `items` (`id`, `item_name`, `cat_id`, `root_cat_id`, `sell_counts`, `on_off_status`, `content`, `created_time`, `updated_time`) VALUES ('cake-1003', '【天天吃货】美味沙琪玛 超棒下午茶', '11', '1', '0', '66', 'hahah', '2020-04-23', '2020-04-23');
+INSERT INTO `items_img` (`id`, `item_id`, `url`, `sort`, `is_main`, `created_time`, `updated_time`) VALUES ('5', 'cake-1007', 'http://122.152.205.72:88/foodie/cake-1004/img3.png', '1', '1', '2020-04-23 00:00:00', '2020-04-23 00:00:00');
+
+INSERT INTO `items` (`id`, `item_name`, `cat_id`, `root_cat_id`, `sell_counts`, `on_off_status`, `content`, `created_time`, `updated_time`) VALUES ('cake-1004', '【天天吃货】超好吃华夫饼 美食诱惑 下午茶', '11', '1', '0', '66', 'hahah', '2020-04-23', '2020-04-23');
+INSERT INTO `items_img` (`id`, `item_id`, `url`, `sort`, `is_main`, `created_time`, `updated_time`) VALUES ('6', 'cake-1007', 'http://122.152.205.72:88/foodie/cake-1004/img1.png', '1', '1', '2020-04-23 00:00:00', '2020-04-23 00:00:00');
+
+UPDATE `foodie`.`items_img` SET `item_id` = 'cake-1004' WHERE (`id` = '6');
+UPDATE `foodie`.`items_img` SET `item_id` = 'cake-1003', `url` = 'http://122.152.205.72:88/foodie/cake-1003/img1.png' WHERE (`id` = '5');
+UPDATE `foodie`.`items_img` SET `url` = 'http://122.152.205.72:88/foodie/cake-1006/img1.png' WHERE (`id` = '2');
+UPDATE `foodie`.`items_img` SET `item_id` = 'cake-1002' WHERE (`id` = '4');

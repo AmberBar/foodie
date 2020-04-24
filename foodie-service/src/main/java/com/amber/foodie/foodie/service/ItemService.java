@@ -4,6 +4,7 @@ import com.amber.foodie.pojo.Items;
 import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
+import com.amber.foodie.pojo.vo.CommentLevelVo;
 
 import java.util.List;
 
@@ -43,4 +44,11 @@ public interface ItemService {
      * @return
      */
     ItemsParam queyItemParam(String itemId);
+
+    /**
+     * 根据商品id查询评价数量
+     * @param itemId
+     * @return
+     */
+    CommentLevelVo queryCommentCounts(String itemId);
 }

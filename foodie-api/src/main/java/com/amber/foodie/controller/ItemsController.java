@@ -7,6 +7,7 @@ import com.amber.foodie.pojo.Items;
 import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
+import com.amber.foodie.pojo.vo.CommentLevelVo;
 import com.amber.foodie.pojo.vo.ItemInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,5 +42,14 @@ public class ItemsController {
         itemInfoVo.setItemSpecList(itemsSpecList);
         itemInfoVo.setItemParams(itemsParam);
         return JsonResult.ok(itemInfoVo);
+    }
+
+    @ApiOperation(value = "商品评价数量", notes = "商品评价数量", httpMethod = "GET")
+    @GetMapping("/commentLevel")
+    public JsonResult commentCounts(
+            @ApiParam(name = "itemId", value = "商品id", required = true)
+            @RequestParam String itemId) {
+        CommentLevelVo commentLevelVo = itemService.queryCommentCounts(itemId);
+        return JsonResult.ok(commentLevelVo);
     }
 }

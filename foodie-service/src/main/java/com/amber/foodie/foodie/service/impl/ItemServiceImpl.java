@@ -1,15 +1,24 @@
 package com.amber.foodie.foodie.service.impl;
 
+import com.amber.foodie.common.utils.DesensitizationUtil;
+import com.amber.foodie.common.utils.PageResult;
 import com.amber.foodie.foodie.service.ItemService;
 import com.amber.foodie.mapper.*;
+import com.amber.foodie.mapper.customer.ItemsCommentsCustomerMapper;
 import com.amber.foodie.pojo.*;
 import com.amber.foodie.pojo.enums.CommentLevel;
 import com.amber.foodie.pojo.vo.CommentLevelVo;
+import com.amber.foodie.pojo.vo.CommentVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -23,6 +32,8 @@ public class ItemServiceImpl implements ItemService {
     ItemsImgMapper itemsImgMapper;
     @Autowired
     ItemsCommentsMapper itemsCommentsMapper;
+    @Autowired
+    ItemsCommentsCustomerMapper itemsCommentsCustomerMapper;
 
     @Override
     public Items queryItemById(String itemId) {
@@ -84,5 +95,21 @@ public class ItemServiceImpl implements ItemService {
             itemsComments.setCommentLevel(level);
         }
         return itemsCommentsMapper.selectCount(itemsComments);
+    }
+
+    @Override
+    public PageResult queryComments(String itemId, Integer level, Integer page, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("itemId", itemId);
+        map.put("level", level);
+        PageHelper.startPage(page, pageSize);
+        List<CommentVo> commentVos = itemsCommentsCustomerMapper.queryItemComments(map);
+        // 信息脱敏
+        List<CommentVo> collect = commentVos.stream().map(commentVo -> {
+            commentVo.setNickname(DesensitizationUtil.commonDisplay(commentVo.getNickname()));
+            return commentVo;
+        }).collect(Collectors.toList());
+        PageResult pageResult = PageResult.converPage(collect, page);
+        return pageResult;
     }
 }

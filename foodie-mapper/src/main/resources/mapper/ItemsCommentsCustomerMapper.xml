@@ -1,81 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.amber.foodie.mapper.customer.CategoryMapperCustomer">
-    <resultMap id="myCategoryVO" type="com.amber.foodie.pojo.vo.CategoryVo">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="type" property="type"/>
-        <result column="fatherId" property="fatherId"/>
-
-        <!--
-          collection 标签：用于定义关联的list集合类型的封装规则
-          property：对应三级分类的list属性名
-          ofType：集合的类型，三级分类的vo
-        -->
-        <collection property="subCatList" ofType="com.amber.foodie.pojo.vo.SubCategoryVo">
-            <id column="subId" property="subId"/>
-            <result column="subName" property="subName"/>
-            <result column="subType" property="subType"/>
-            <result column="subFatherId" property="subFatherId"/>
-        </collection>
-    </resultMap>
-    <select id="getSubCatList" parameterType="int" resultMap="myCategoryVO">
+<mapper namespace="com.amber.foodie.mapper.customer.ItemsCommentsCustomerMapper">
+    <select id="queryItemComments" resultType="com.amber.foodie.pojo.vo.CommentVo" parameterType="map">
         SELECT
-        f.id as id,
-        f.`name` as `name`,
-        f.type as type,
-        f.father_id as fatherId,
-        c.id as subId,
-        c.`name` as subName,
-        c.type as subType,
-        c.father_id as subFatherId
-        FROM
-            category f
-        LEFT JOIN
-            category c
-        on
-            f.id = c.father_id
-        WHERE
-            f.father_id = #{fatherId}
+        ic.comment_level AS commentLevel,
+        ic.content       AS content,
+        ic.sepc_name     AS specName,
+        ic.created_time  AS createdTime,
+        u.face           AS userFace,
+        u.nickname       AS nickname
+        FROM items_comments ic
+        INNER JOIN user u
+        ON ic.user_id = u.id
+        WHERE ic.item_id =  #{paramMap.itemId}
+        <if test="paramMap.level != null and paramMap.level != ''">
+            AND ic.comment_level =  #{paramMap.level}
+        </if>
     </select>
-
-    <resultMap id="myitemsVO" type="com.amber.foodie.pojo.vo.NewItemsVo">
-        <id column="rootCatId" property="rootCatId"/>
-        <result column="rootCatName" property="rootCatName"/>
-        <result column="slogan" property="slogan"/>
-        <result column="catImage" property="catImage"/>
-        <result column="bgColor" property="bgColor"/>
-        <!--
-          collection 标签：用于定义关联的list集合类型的封装规则
-          property：对应三级分类的list属性名
-          ofType：集合的类型，三级分类的vo
-        -->
-        <collection property="simpleItemList" ofType="com.amber.foodie.pojo.vo.SimpleItemsVo">
-            <id column="itemName" property="itemName"/>
-            <result column="itemUrl" property="itemUrl"/>
-            <result column="itemId" property="itemId"/>
-        </collection>
-    </resultMap>
-
-    <select id="getNewItems" resultMap="myitemsVO" parameterType="map">
-        SELECT
-          f.id           AS rootCatId,
-          f.name         AS rootCatName,
-          f.slogan       AS slogan,
-          f.cat_image    AS catImage,
-          f.bg_color     AS bgColor,
-           i.id as itemId,
-          i.item_name    AS itemName,
-          ii.url         AS itemUrl
-        FROM category f
-          LEFT JOIN items i
-            ON f.id = i.root_cat_id
-          LEFT JOIN items_img ii
-            ON ii.item_id = i.id
-        WHERE f.type = 1
-            AND i.root_cat_id = #{paramMap.rootCartId}
-            AND ii.is_main = 1
-        ORDER BY i.created_time DESC
-        limit 0,6
-  </select>
 </mapper>

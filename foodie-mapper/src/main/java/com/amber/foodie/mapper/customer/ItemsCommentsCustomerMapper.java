@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface ItemsCommentsCustomerMapper {
 
-   List<CommentVo> queryItemComments(@Param("paramMap")Map<String,Object> map);
+    List<CommentVo> queryItemComments(@Param("paramMap") Map<String, Object> map);
 }

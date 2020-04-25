@@ -1,8 +1,8 @@
 package com.amber.foodie.pojo.enums;
 
-public enum  CommentLevel {
-    GOOD(1,"好评"),
-    NORMOL(2,"中评"),
+public enum CommentLevel {
+    GOOD(1, "好评"),
+    NORMOL(2, "中评"),
     BAD(3, "差评");
     public final Integer type;
     public final String value;

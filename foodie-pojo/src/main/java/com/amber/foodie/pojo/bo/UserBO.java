@@ -2,9 +2,6 @@ package com.amber.foodie.pojo.bo;
 
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.validation.constraints.NotBlank;
 

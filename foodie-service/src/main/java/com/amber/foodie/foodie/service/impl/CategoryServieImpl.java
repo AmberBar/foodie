@@ -13,6 +13,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.HashMap;
 import java.util.List;
+
 @Service
 @Transactional
 public class CategoryServieImpl implements ICategoryService {
@@ -38,8 +39,8 @@ public class CategoryServieImpl implements ICategoryService {
 
     @Override
     public List<NewItemsVo> getNewItems(Integer fatherId) {
-        HashMap map=new HashMap();
-        map.put("rootCartId",fatherId);
+        HashMap map = new HashMap();
+        map.put("rootCartId", fatherId);
         return categoryMapperCustomerl.getNewItems(map);
     }
 }

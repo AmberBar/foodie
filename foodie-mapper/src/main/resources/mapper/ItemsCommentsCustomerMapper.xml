@@ -4,17 +4,17 @@
     <select id="queryItemComments" resultType="com.amber.foodie.pojo.vo.CommentVo" parameterType="map">
         SELECT
         ic.comment_level AS commentLevel,
-        ic.content       AS content,
-        ic.sepc_name     AS specName,
-        ic.created_time  AS createdTime,
-        u.face           AS userFace,
-        u.nickname       AS nickname
+        ic.content AS content,
+        ic.sepc_name AS specName,
+        ic.created_time AS createdTime,
+        u.face AS userFace,
+        u.nickname AS nickname
         FROM items_comments ic
         INNER JOIN user u
         ON ic.user_id = u.id
-        WHERE ic.item_id =  #{paramMap.itemId}
+        WHERE ic.item_id = #{paramMap.itemId}
         <if test="paramMap.level != null and paramMap.level != ''">
-            AND ic.comment_level =  #{paramMap.level}
+            AND ic.comment_level = #{paramMap.level}
         </if>
     </select>
 </mapper>

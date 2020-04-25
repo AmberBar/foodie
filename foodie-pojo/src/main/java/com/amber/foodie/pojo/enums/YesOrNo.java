@@ -1,8 +1,8 @@
 package com.amber.foodie.pojo.enums;
 
 public enum YesOrNo {
-    No(0,"否"),
-    Yes(1,"是");
+    No(0, "否"),
+    Yes(1, "是");
 
     public final Integer type;
     public final String value;

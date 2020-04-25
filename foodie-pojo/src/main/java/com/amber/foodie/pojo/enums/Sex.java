@@ -1,9 +1,9 @@
 package com.amber.foodie.pojo.enums;
 
-public enum  Sex {
-    MAN(1,"男"),
-    WOMAN(0,"女"),
-    SECRET(2,"保密");
+public enum Sex {
+    MAN(1, "男"),
+    WOMAN(0, "女"),
+    SECRET(2, "保密");
     public final Integer type;
     public final String value;
 

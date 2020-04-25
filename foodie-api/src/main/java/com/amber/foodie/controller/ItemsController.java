@@ -9,13 +9,11 @@ import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
 import com.amber.foodie.pojo.vo.CommentLevelVo;
-import com.amber.foodie.pojo.vo.CommentVo;
 import com.amber.foodie.pojo.vo.ItemInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,13 +60,13 @@ public class ItemsController {
     public JsonResult queryComments(
             @ApiParam(name = "itemId", value = "商品id", required = true)
             @RequestParam String itemId,
-            @ApiParam(name="level", value="等级", required = false)
+            @ApiParam(name = "level", value = "等级", required = false)
             @RequestParam Integer level,
-            @ApiParam(name="page", value="当前页数", required = false)
+            @ApiParam(name = "page", value = "当前页数", required = false)
             @RequestParam Integer page,
-            @ApiParam(name="pageSize", value="每页大小", required = false)
+            @ApiParam(name = "pageSize", value = "每页大小", required = false)
             @RequestParam Integer pageSize
-            ) {
+    ) {
         PageResult pageResult = itemService.queryComments(itemId, level, page, pageSize);
         return JsonResult.ok(pageResult);
     }

@@ -24,7 +24,8 @@ public class JsonUtils {
 
     public static <T> List<T> jsonToList(String jsonData, Class<T> beanType) {
         try {
-            return OBJECT_MAPPER.readValue(jsonData, new TypeReference<List<T>>() {});
+            return OBJECT_MAPPER.readValue(jsonData, new TypeReference<List<T>>() {
+            });
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (IOException e) {

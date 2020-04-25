@@ -1,7 +1,5 @@
 package com.amber.foodie.mapper.customer;
 
-import com.amber.foodie.my.mapper.MyMapper;
-import com.amber.foodie.pojo.Category;
 import com.amber.foodie.pojo.vo.CategoryVo;
 import com.amber.foodie.pojo.vo.NewItemsVo;
 import org.apache.ibatis.annotations.Param;

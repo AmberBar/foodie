@@ -6,7 +6,6 @@ import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
 import com.amber.foodie.pojo.vo.CommentLevelVo;
-import com.amber.foodie.pojo.vo.CommentVo;
 
 import java.util.List;
 
@@ -49,6 +48,7 @@ public interface ItemService {
 
     /**
      * 根据商品id查询评价数量
+     *
      * @param itemId
      * @return
      */
@@ -56,9 +56,10 @@ public interface ItemService {
 
     /**
      * 根据商品id和等级查询评价
+     *
      * @param itemId
      * @param level
      * @return
      */
-    PageResult queryComments(String itemId, Integer level, Integer page, Integer pageSize );
+    PageResult queryComments(String itemId, Integer level, Integer page, Integer pageSize);
 }

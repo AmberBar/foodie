@@ -15,13 +15,15 @@ public interface ICategoryService {
     List<Category> queryRootLevelCat();
 
     /**
-     *根据一级分类id 查询子分类
+     * 根据一级分类id 查询子分类
+     *
      * @return
      */
     List<CategoryVo> querySubCat(Integer fatherId);
 
     /**
      * 根据一级分类查询推荐商品
+     *
      * @param fatherId
      * @return
      */

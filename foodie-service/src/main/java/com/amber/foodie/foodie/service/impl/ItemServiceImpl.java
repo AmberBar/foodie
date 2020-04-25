@@ -10,7 +10,6 @@ import com.amber.foodie.pojo.enums.CommentLevel;
 import com.amber.foodie.pojo.vo.CommentLevelVo;
 import com.amber.foodie.pojo.vo.CommentVo;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -83,13 +82,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     *
      * @param itemId
-     * @param level 1,2,3好评中评差评
+     * @param level  1,2,3好评中评差评
      * @return
      */
     Integer queryCommentCountsByLevel(String itemId, Integer level) {
-        ItemsComments  itemsComments = new ItemsComments();
+        ItemsComments itemsComments = new ItemsComments();
         itemsComments.setItemId(itemId);
         if (level != null) {
             itemsComments.setCommentLevel(level);

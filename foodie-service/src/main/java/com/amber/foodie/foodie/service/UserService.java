@@ -3,12 +3,11 @@ package com.amber.foodie.foodie.service;
 import com.amber.foodie.pojo.User;
 import com.amber.foodie.pojo.bo.UserBO;
 
-import java.util.List;
-
 public interface UserService {
 
     /**
      * 判断用户名是否存在
+     *
      * @param username
      * @return
      */
@@ -16,6 +15,7 @@ public interface UserService {
 
     /**
      * 注册用户名
+     *
      * @param userBO
      * @return
      */
@@ -23,6 +23,7 @@ public interface UserService {
 
     /**
      * 通过用户名和密码查找用户
+     *
      * @param username
      * @param password
      * @return

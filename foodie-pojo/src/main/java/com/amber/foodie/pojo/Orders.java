@@ -2,7 +2,8 @@ package com.amber.foodie.pojo;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Data

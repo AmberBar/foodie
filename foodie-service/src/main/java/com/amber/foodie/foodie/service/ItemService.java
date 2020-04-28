@@ -62,4 +62,14 @@ public interface ItemService {
      * @return
      */
     PageResult queryComments(String itemId, Integer level, Integer page, Integer pageSize);
+
+    /**
+     * 根据关键字搜索商品并分页排序
+     * @param keywords
+     * @param sort
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PageResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
 }

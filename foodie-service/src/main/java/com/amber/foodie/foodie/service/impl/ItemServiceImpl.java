@@ -5,6 +5,7 @@ import com.amber.foodie.common.utils.PageResult;
 import com.amber.foodie.foodie.service.ItemService;
 import com.amber.foodie.mapper.*;
 import com.amber.foodie.mapper.customer.ItemsCommentsCustomerMapper;
+import com.amber.foodie.mapper.customer.ItemsCustomerMapper;
 import com.amber.foodie.pojo.*;
 import com.amber.foodie.pojo.enums.CommentLevel;
 import com.amber.foodie.pojo.vo.CommentLevelVo;
@@ -33,6 +34,8 @@ public class ItemServiceImpl implements ItemService {
     ItemsCommentsMapper itemsCommentsMapper;
     @Autowired
     ItemsCommentsCustomerMapper itemsCommentsCustomerMapper;
+    @Autowired
+    ItemsCustomerMapper itemsCustomerMapper;
 
     @Override
     public Items queryItemById(String itemId) {
@@ -109,5 +112,23 @@ public class ItemServiceImpl implements ItemService {
         }).collect(Collectors.toList());
         PageResult pageResult = PageResult.converPage(collect, page);
         return pageResult;
+    }
+
+    /**
+     * @param keywords 　搜索关键字
+     * @param sort     　排序
+     * @param page     第几页
+     * @param pageSize 　每页大小
+     * @return
+     */
+    @Override
+    public PageResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
+        HashMap hashMap = new HashMap();
+        hashMap.put("keywords", keywords);
+        hashMap.put("sort", sort);
+        PageHelper.startPage(page, pageSize);
+
+        List list = itemsCustomerMapper.searchItems(hashMap);
+        return PageResult.converPage(list, page);
     }
 }

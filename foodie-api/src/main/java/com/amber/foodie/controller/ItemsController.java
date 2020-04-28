@@ -70,4 +70,25 @@ public class ItemsController {
         PageResult pageResult = itemService.queryComments(itemId, level, page, pageSize);
         return JsonResult.ok(pageResult);
     }
+
+    @ApiOperation(value = "搜索商品列表", notes = "搜索商品列表", httpMethod = "GET")
+    @GetMapping("/search")
+    public JsonResult search(
+            @ApiParam(name = "keywords", value = "关键字", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "排序", required = true)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "当前页", required = false)
+            @RequestParam(required = false) Integer page,
+            @ApiParam(name = "pageSize", value = "每页条数", required = false)
+            @RequestParam(required = false) Integer pageSize) {
+        if (page == null) {
+            page = PageResult.NORMOL_PAGE;
+        }
+        if (pageSize == null) {
+            pageSize = PageResult.NORMOL_PAGE_SIZE;
+        }
+        PageResult pageResult = itemService.searchItems(keywords, sort, page, pageSize);
+        return JsonResult.ok(pageResult);
+    }
 }

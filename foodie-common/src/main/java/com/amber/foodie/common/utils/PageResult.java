@@ -10,6 +10,11 @@ import java.util.List;
  */
 @Data
 public class PageResult {
+    // 默认每页大小
+    public static final int NORMOL_PAGE_SIZE = 10;
+    // 默认当前第几页
+    public static final int NORMOL_PAGE = 1;
+
     /**
      * 当前页数
      */

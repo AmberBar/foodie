@@ -3,7 +3,7 @@ package com.amber.foodie.pojo.vo;
 import lombok.Data;
 
 @Data
-public class CommentLevelVo {
+public class CommentLevelVO {
 
     private Integer totalCounts;
     private Integer goodCounts;

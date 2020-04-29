@@ -1,6 +1,6 @@
 package com.amber.foodie.mapper.customer;
 
-import com.amber.foodie.pojo.vo.CommentVo;
+import com.amber.foodie.pojo.vo.CommentVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface ItemsCommentsCustomerMapper {
 
-    List<CommentVo> queryItemComments(@Param("paramMap") Map<String, Object> map);
+    List<CommentVO> queryItemComments(@Param("paramMap") Map<String, Object> map);
 }

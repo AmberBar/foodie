@@ -6,7 +6,7 @@ import lombok.Data;
  * 搜索商品列表Vo
  */
 @Data
-public class SearchItemsVo {
+public class SearchItemsVO {
     private String itemId;
     private String itemName;
     private int sellCounts;

@@ -8,7 +8,7 @@ import java.util.Date;
  * 商品评价
  */
 @Data
-public class CommentVo {
+public class CommentVO {
     private Integer commentLevel;
     private String content;
     private String specName;

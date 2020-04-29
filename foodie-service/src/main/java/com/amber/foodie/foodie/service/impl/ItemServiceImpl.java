@@ -8,8 +8,8 @@ import com.amber.foodie.mapper.customer.ItemsCommentsCustomerMapper;
 import com.amber.foodie.mapper.customer.ItemsCustomerMapper;
 import com.amber.foodie.pojo.*;
 import com.amber.foodie.pojo.enums.CommentLevel;
-import com.amber.foodie.pojo.vo.CommentLevelVo;
-import com.amber.foodie.pojo.vo.CommentVo;
+import com.amber.foodie.pojo.vo.CommentLevelVO;
+import com.amber.foodie.pojo.vo.CommentVO;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,12 +71,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentLevelVo queryCommentCounts(String itemId) {
+    public CommentLevelVO queryCommentCounts(String itemId) {
         Integer goodCommentCounts = queryCommentCountsByLevel(itemId, CommentLevel.GOOD.type);
         Integer normolCommentCounts = queryCommentCountsByLevel(itemId, CommentLevel.NORMOL.type);
         Integer badCommentCounts = queryCommentCountsByLevel(itemId, CommentLevel.BAD.type);
         Integer totalCommentCounts = goodCommentCounts + badCommentCounts + normolCommentCounts;
-        CommentLevelVo commentLevelVo = new CommentLevelVo();
+        CommentLevelVO commentLevelVo = new CommentLevelVO();
         commentLevelVo.setTotalCounts(totalCommentCounts);
         commentLevelVo.setGoodCounts(goodCommentCounts);
         commentLevelVo.setNormalCounts(normolCommentCounts);
@@ -104,9 +104,9 @@ public class ItemServiceImpl implements ItemService {
         map.put("itemId", itemId);
         map.put("level", level);
         PageHelper.startPage(page, pageSize);
-        List<CommentVo> commentVos = itemsCommentsCustomerMapper.queryItemComments(map);
+        List<CommentVO> commentVos = itemsCommentsCustomerMapper.queryItemComments(map);
         // 信息脱敏
-        List<CommentVo> collect = commentVos.stream().map(commentVo -> {
+        List<CommentVO> collect = commentVos.stream().map(commentVo -> {
             commentVo.setNickname(DesensitizationUtil.commonDisplay(commentVo.getNickname()));
             return commentVo;
         }).collect(Collectors.toList());

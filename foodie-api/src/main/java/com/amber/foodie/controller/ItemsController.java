@@ -8,8 +8,8 @@ import com.amber.foodie.pojo.Items;
 import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
-import com.amber.foodie.pojo.vo.CommentLevelVo;
-import com.amber.foodie.pojo.vo.ItemInfoVo;
+import com.amber.foodie.pojo.vo.CommentLevelVO;
+import com.amber.foodie.pojo.vo.ItemInfoVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -38,7 +38,7 @@ public class ItemsController {
         List<ItemsImg> itemsImgList = itemService.queryItemsImgList(itemId);
         List<ItemsSpec> itemsSpecList = itemService.queryItemSpecList(itemId);
         ItemsParam itemsParam = itemService.queyItemParam(itemId);
-        ItemInfoVo itemInfoVo = new ItemInfoVo();
+        ItemInfoVO itemInfoVo = new ItemInfoVO();
         itemInfoVo.setItem(items);
         itemInfoVo.setItemImgList(itemsImgList);
         itemInfoVo.setItemSpecList(itemsSpecList);
@@ -51,7 +51,7 @@ public class ItemsController {
     public JsonResult commentCounts(
             @ApiParam(name = "itemId", value = "商品id", required = true)
             @RequestParam String itemId) {
-        CommentLevelVo commentLevelVo = itemService.queryCommentCounts(itemId);
+        CommentLevelVO commentLevelVo = itemService.queryCommentCounts(itemId);
         return JsonResult.ok(commentLevelVo);
     }
 

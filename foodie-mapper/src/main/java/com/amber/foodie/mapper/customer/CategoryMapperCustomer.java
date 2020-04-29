@@ -1,14 +1,14 @@
 package com.amber.foodie.mapper.customer;
 
-import com.amber.foodie.pojo.vo.CategoryVo;
-import com.amber.foodie.pojo.vo.NewItemsVo;
+import com.amber.foodie.pojo.vo.CategoryVO;
+import com.amber.foodie.pojo.vo.NewItemsVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
 
 public interface CategoryMapperCustomer {
-    public List<CategoryVo> getSubCatList(Integer fatherId);
+    public List<CategoryVO> getSubCatList(Integer fatherId);
 
-    List<NewItemsVo> getNewItems(@Param("paramMap") HashMap map);
+    List<NewItemsVO> getNewItems(@Param("paramMap") HashMap map);
 }

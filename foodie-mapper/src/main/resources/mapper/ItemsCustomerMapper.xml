@@ -16,7 +16,7 @@
         <result column="content" jdbcType="LONGVARCHAR" property="content"/>
     </resultMap>
 
-    <select id="searchItems" resultType="com.amber.foodie.pojo.vo.SearchItemsVo" parameterType="map">
+    <select id="searchItems" resultType="com.amber.foodie.pojo.vo.SearchItemsVO" parameterType="map">
         SELECT
         i.id          AS itemId,
         i.item_name   AS itemName,

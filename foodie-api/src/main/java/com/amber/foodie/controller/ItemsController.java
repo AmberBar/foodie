@@ -10,6 +10,7 @@ import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
 import com.amber.foodie.pojo.vo.CommentLevelVO;
 import com.amber.foodie.pojo.vo.ItemInfoVO;
+import com.amber.foodie.pojo.vo.ShopcartVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -90,5 +91,20 @@ public class ItemsController {
         }
         PageResult pageResult = itemService.searchItems(keywords, sort, page, pageSize);
         return JsonResult.ok(pageResult);
+    }
+
+
+    /**
+     *
+     * @param itemSpecIds 商品规格字符串 "11001,11002"
+     * @return
+     */
+    @ApiOperation(value = "刷新购物车", notes = "刷新购物车", httpMethod = "GET")
+    @GetMapping("/refresh")
+    public JsonResult refresh(
+            @ApiParam(name = "itemSpecIds", value = "商品规格字符串 11001,11002", required = true)
+            @RequestParam("itemSpecIds") String itemSpecIds) {
+        List<ShopcartVO> shopcartVOS = itemService.queryItemsBySpecIds(itemSpecIds);
+        return JsonResult.ok(shopcartVOS);
     }
 }

@@ -6,6 +6,7 @@ import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.ItemsParam;
 import com.amber.foodie.pojo.ItemsSpec;
 import com.amber.foodie.pojo.vo.CommentLevelVO;
+import com.amber.foodie.pojo.vo.ShopcartVO;
 
 import java.util.List;
 
@@ -65,6 +66,7 @@ public interface ItemService {
 
     /**
      * 根据关键字搜索商品并分页排序
+     *
      * @param keywords
      * @param sort
      * @param page
@@ -72,4 +74,11 @@ public interface ItemService {
      * @return
      */
     PageResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
+
+    /***
+     * 根据规格ids查询最新的购物车中商品数据（用于刷新渲染购物车中的商品数据）
+     * @param specIds
+     * @return
+     */
+    public List<ShopcartVO> queryItemsBySpecIds(String specIds);
 }

@@ -10,14 +10,14 @@ import com.amber.foodie.pojo.*;
 import com.amber.foodie.pojo.enums.CommentLevel;
 import com.amber.foodie.pojo.vo.CommentLevelVO;
 import com.amber.foodie.pojo.vo.CommentVO;
+import com.amber.foodie.pojo.vo.ShopcartVO;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -130,5 +130,20 @@ public class ItemServiceImpl implements ItemService {
 
         List list = itemsCustomerMapper.searchItems(hashMap);
         return PageResult.converPage(list, page);
+    }
+
+    /**
+     * 根据商品规格id查询商品明细等，用于前台刷新购物车
+     * @param specIds 商品规格id 10001,10002
+     * @return
+     */
+    @Override
+    public List<ShopcartVO> queryItemsBySpecIds(String specIds) {
+        if (!StringUtils.isNoneBlank(specIds)) {
+            return null;
+        }
+        String[] split = specIds.split(",");
+        List<String> strings = Arrays.asList(split);
+        return itemsCustomerMapper.queryItemsBySpecIds(strings);
     }
 }

@@ -101,4 +101,10 @@ public class AddressServiceImpl implements AddressService {
         userAddress.setIsDefault(YesOrNo.Yes.type);
         userAddressMapper.updateByPrimaryKey(userAddress);
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public UserAddress findUserAddressById(String addressId) {
+        return userAddressMapper.selectByPrimaryKey(addressId);
+    }
 }

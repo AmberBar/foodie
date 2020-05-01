@@ -38,4 +38,11 @@ public interface AddressService {
      * 设置默认地址
      */
     public void defaultAddress(String userId, String id);
+
+    /**
+     * 根据id查询地址
+     * @param addressId
+     * @return
+     */
+    public UserAddress findUserAddressById(String addressId);
 }

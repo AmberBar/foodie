@@ -4,4 +4,6 @@ import com.amber.foodie.my.mapper.MyMapper;
 import com.amber.foodie.pojo.ItemsSpec;
 
 public interface ItemsSpecMapper extends MyMapper<ItemsSpec> {
+
+    public int decreaseItemSpecStock(String itemSpecId, Integer buyCounts);
 }

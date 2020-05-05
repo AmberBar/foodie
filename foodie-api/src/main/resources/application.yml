@@ -2,8 +2,6 @@ server:
   port: 8088
   tomcat:
     uri-encoding: UTF-8
-  jetty:
-    max-http-post-size: 80KB
 
 spring:
   datasource:

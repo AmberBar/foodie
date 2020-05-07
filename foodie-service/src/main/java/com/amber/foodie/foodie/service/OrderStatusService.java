@@ -10,4 +10,6 @@ public interface OrderStatusService {
      * @param orderStatus
      */
     public void create(OrderStatus orderStatus);
+
+    void update(OrderStatus status);
 }

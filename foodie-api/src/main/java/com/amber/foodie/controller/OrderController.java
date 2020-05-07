@@ -2,16 +2,18 @@ package com.amber.foodie.controller;
 
 import com.amber.foodie.common.utils.JsonResult;
 import com.amber.foodie.foodie.service.OrderService;
+import com.amber.foodie.foodie.service.PaymentService;
 import com.amber.foodie.pojo.bo.SubmitOrderBO;
+import com.amber.foodie.pojo.enums.OrderStatusEnum;
 import com.amber.foodie.pojo.enums.PayMethod;
+import com.amber.foodie.pojo.vo.MerchantOrdersVO;
+import com.amber.foodie.pojo.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
@@ -20,6 +22,8 @@ public class OrderController {
 
     @Autowired
     OrderService orderService;
+    @Autowired
+    PaymentService paymentService;
 
     /**
      * 创建订单:
@@ -35,11 +39,32 @@ public class OrderController {
     public JsonResult add(
             @ApiParam(name = "submitOrderBO", value = "提交订单数据", required = true)
             @RequestBody SubmitOrderBO submitOrderBO
-    ) {
+    ) throws Exception {
         if (submitOrderBO.getPayMethod() != PayMethod.ALIPAY.type && submitOrderBO.getPayMethod() != PayMethod.WEIXIN.type) {
             return JsonResult.errorMsg("支付方式不支持");
         }
-        orderService.createOrder(submitOrderBO);
+        OrderVO orderVO = orderService.createOrder(submitOrderBO);
+        String payReturnUrl = "http://hmhsb3.natappfree.cc/payment/notice/wxpay";
+        MerchantOrdersVO merchantOrdersVO = orderVO.getMerchantOrdersVO();
+        merchantOrdersVO.setReturnUrl(payReturnUrl);
+        // 所有的支付金额都统一改为1分钱
+        merchantOrdersVO.setAmount(1);
+        String orderId = orderVO.getOrderId();
+
+        paymentService.createMerchantOrder(merchantOrdersVO);
+
         return JsonResult.ok();
+    }
+
+    /**
+     * 通知支付完成,更新状态
+     *
+     * @param merchantOrderId
+     * @return
+     */
+    @GetMapping("/notifyMerchantOrderPaid")
+    public Integer notifyMerchantOrderPaid(String merchantOrderId) {
+        orderService.updateOrderStatus(merchantOrderId, OrderStatusEnum.WAIT_DELIVER.type);
+        return HttpStatus.OK.value();
     }
 }

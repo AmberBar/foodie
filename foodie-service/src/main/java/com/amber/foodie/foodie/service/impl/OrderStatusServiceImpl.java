@@ -15,4 +15,9 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     public void create(OrderStatus orderStatus) {
         orderStatusMapper.insert(orderStatus);
     }
+
+    @Override
+    public void update(OrderStatus orderStatus) {
+        orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
+    }
 }

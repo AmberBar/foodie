@@ -6,6 +6,8 @@ import com.amber.foodie.pojo.*;
 import com.amber.foodie.pojo.bo.SubmitOrderBO;
 import com.amber.foodie.pojo.enums.OrderStatusEnum;
 import com.amber.foodie.pojo.enums.YesOrNo;
+import com.amber.foodie.pojo.vo.MerchantOrdersVO;
+import com.amber.foodie.pojo.vo.OrderVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
         Integer payMethod = submitOrderBO.getPayMethod();
         String addressId = submitOrderBO.getAddressId();
 
@@ -110,6 +112,7 @@ public class OrderServiceImpl implements OrderService {
         // 订单总价格
         orders.setTotalAmount(totalAmount);
         orders.setRealPayAmount(realPayAmount);
+        orders.setUpdatedTime(new Date());
         ordersMapper.insert(orders);
 
         // 保存订单状态表
@@ -119,5 +122,27 @@ public class OrderServiceImpl implements OrderService {
 
         waitPayOrderStatus.setCreatedTime(new Date());
         orderStatusService.create(waitPayOrderStatus);
+
+        //4构建商户订单，用于传给支付中心
+        MerchantOrdersVO merchantOrdersVO = new MerchantOrdersVO();
+        merchantOrdersVO.setMerchantOrderId(orderId);
+        merchantOrdersVO.setMerchantUserId(userId);
+        merchantOrdersVO.setAmount(realPayAmount + orders.getPostAmount());
+        merchantOrdersVO.setPayMethod(payMethod);
+
+        //5构建自定义订单
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOrderId(orderId);
+        orderVO.setMerchantOrdersVO(merchantOrdersVO);
+        return orderVO;
+    }
+
+    @Override
+    public void updateOrderStatus(String merchantOrderId, Integer type) {
+        OrderStatus update = new OrderStatus();
+        update.setOrderId(merchantOrderId);
+        update.setOrderStatus(type);
+        update.setPayTime(new Date());
+        orderStatusService.update(update);
     }
 }

@@ -1,7 +1,6 @@
 package com.amber.foodie.foodie.service.impl;
 
 import com.amber.foodie.foodie.service.ItemsImgService;
-import com.amber.foodie.foodie.service.ItemsSpecService;
 import com.amber.foodie.mapper.ItemsImgMapper;
 import com.amber.foodie.pojo.ItemsImg;
 import com.amber.foodie.pojo.enums.YesOrNo;

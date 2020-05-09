@@ -52,9 +52,9 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     public PaymentOrder queryOrderByStatus(String merchantUserId, String merchantOrderId, Integer orderStatus) {
         Example example = new Example(PaymentOrder.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("merchant_order_id", merchantOrderId);
-        criteria.andEqualTo("merchant_user_id", merchantUserId);
-        criteria.andEqualTo("pay_status", orderStatus);
+        criteria.andEqualTo("merchantOrderId", merchantOrderId);
+        criteria.andEqualTo("merchantUserId", merchantUserId);
+        criteria.andEqualTo("payStatus", orderStatus);
         PaymentOrder paymentOrder = tradingCenterOrderMapper.selectOneByExample(example);
         return paymentOrder;
     }
@@ -64,7 +64,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     public String updateOrderPaid(String merchantOrderId, Integer paidAmount) {
         Example example = new Example(PaymentOrder.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("merchant_order_id", merchantOrderId);
+        criteria.andEqualTo("merchantOrderId", merchantOrderId);
         PaymentOrder paymentOrder = tradingCenterOrderMapper.selectOneByExample(example);
         paymentOrder.setPayStatus(PaymentStatus.PAID.type);
         paymentOrder.setAmount(paidAmount);
@@ -76,7 +76,7 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     String queryMerchantReturnUrl(String merchantOrderId) {
         Example example = new Example(PaymentOrder.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("merchant_order_id", merchantOrderId);
+        criteria.andEqualTo("merchantOrderId", merchantOrderId);
         PaymentOrder paymentOrder = tradingCenterOrderMapper.selectOneByExample(example);
         return paymentOrder.getReturnUrl();
     }
@@ -85,8 +85,8 @@ public class PaymentOrderServiceImpl implements PaymentOrderService {
     public PaymentOrder queryOrderInfo(String merchantUserId, String merchantOrderId) {
         Example example = new Example(PaymentOrder.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("merchant_order_id", merchantOrderId);
-        criteria.andEqualTo("merchant_user_id", merchantUserId);
+        criteria.andEqualTo("merchantOrderId", merchantOrderId);
+        criteria.andEqualTo("merchantUserId", merchantUserId);
         PaymentOrder paymentOrder = tradingCenterOrderMapper.selectOneByExample(example);
         return paymentOrder;
     }

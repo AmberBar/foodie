@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         Integer postAmount = 0;
         // 1. 向订单表插入数据 Orders Order_Items Order_Status
         Orders orders = new Orders();
-        String orderId = UUID.randomUUID().toString();
+        String orderId = UUID.randomUUID().toString().replace("-", "");
         orders.setId(orderId);
         orders.setUserId(userId);
         // 查找地址

@@ -1,16 +1,7 @@
 package com.amber.foodie.common.wx.entity;
 
 /**
- * 
- * @Title: PayResult.java
- * @Package com.itzixi.wx.entity
- * @Description: 支付结果封装类
- * Copyright: Copyright (c) 2016
- * Company:FURUIBOKE.SCIENCE.AND.TECHNOLOGY
- * 
- * @author Amber
- * @date 2019年8月31日 下午4:26:14
- * @version V1.0
+ * 支付结果封装类
  */
 public class PayResult {
 	private String return_code;				// 返回状态码

@@ -1,16 +1,7 @@
 package com.amber.foodie.common.wx.entity;
 
 /**
- * 
- * @Title: PreOrderResult.java
- * @Package com.itzixi.wx.entity
- * @Description: 微信支付 - 统一下单返回结果的封装entity
- * Copyright: Copyright (c) 2016
- * Company:FURUIBOKE.SCIENCE.AND.TECHNOLOGY
- * 
- * @author leechenxiang
- * @date 2017年8月31日 上午10:39:14
- * @version V1.0
+ * 微信支付 - 统一下单返回结果的封装entity
  */
 public class PreOrderResult {
 	

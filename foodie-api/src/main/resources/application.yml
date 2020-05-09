@@ -20,6 +20,13 @@ spring:
       pool-name: DataSourceHikariCP #连接池名字
       max-lifetime: 600000 #连接的生命时长，超时而且没有被使用则会被释放, 默认30分钟
       connection-test-query: SELECT 1 #测试连接
+  redis:
+    # redis数据库索引(默认为0)，我们使用索引为3的数据库，避免和其他数据库冲突
+    database: 3
+    host: 127.0.0.1
+    post: 6379
+#    password: 123456
+#    timeout: 300
 mybatis:
   type-aliases-package: com.amber.foodie #所有pojo类所在的包路径
   mapper-locations: classpath:mapper/*.xml #mapper映射文件

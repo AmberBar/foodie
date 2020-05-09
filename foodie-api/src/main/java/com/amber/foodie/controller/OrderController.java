@@ -53,7 +53,7 @@ public class OrderController {
 
         paymentService.createMerchantOrder(merchantOrdersVO);
 
-        return JsonResult.ok();
+        return JsonResult.ok(orderId);
     }
 
     /**

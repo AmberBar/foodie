@@ -8,6 +8,7 @@ import com.amber.payment.service.WxOrderService;
 import com.amber.payment.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,16 +74,16 @@ public class NotifyController {
 
 
             // 通知天天吃货服务端订单已支付
-//			String url = "http://192.168.1.2:8088/orders/notifyMerchantOrderPaid";
-//            orderService.notifyMerchantOrderPaid(merchantOrderId);
-            // TODO template
+            ResponseEntity<Integer> forEntity =
+                    restTemplate.getForEntity(queryMerchantReturnUrl + "?merchantOrderId={1}", Integer.class, merchantOrderId);
             // 通知微信已经收到消息，否则微信会10连击调用本接口
+            log.info("***********************通知商家的状态码:{}", forEntity.getStatusCode());
+
             String noticeStr = setXML("SUCCESS", "");
             writer.write(noticeStr);
             writer.flush();
-
         } else {
-            System.out.println("================================= 支付失败 =================================");
+            log.error("================================= 支付失败 =================================");
 
             // 支付失败
             String noticeStr = setXML("FAIL", "");

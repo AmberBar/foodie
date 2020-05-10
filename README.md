@@ -22,9 +22,6 @@ pagehelper:
 ```
 * 使用分页插件
 ```java
-/**
- * page: 当前页数, pageSize: 每页大小
- */
 PageHelper.startPage(page, pageSize);
 ```
 
@@ -37,3 +34,5 @@ pageResult.setTotal(pageInfo.getPages());
 pageResult.setRecords(pageInfo.getTotal());
 pageResult.setRows(list);
 ```
+## 内网穿刺
+[https://natapp.cn/article/natapp_newbie](https://natapp.cn/article/natapp_newbie)

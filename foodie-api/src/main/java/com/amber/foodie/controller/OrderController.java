@@ -50,11 +50,12 @@ public class OrderController {
         }
         // 本地创建订单
         OrderVO orderVO = orderService.createOrder(submitOrderBO);
-//        String payReturnUrl = "http://hmhsb3.natappfree.cc/payment/notice/wxpay";
         String payReturnUrl = paymentUrl + "/orders/create";
 
         MerchantOrdersVO merchantOrdersVO = orderVO.getMerchantOrdersVO();
-        merchantOrdersVO.setReturnUrl(payReturnUrl);
+        // TODO
+        merchantOrdersVO.setReturnUrl("http://localhost:8088/orders/notifyMerchantOrderPaid");
+
         // 所有的支付金额都统一改为1分钱
         merchantOrdersVO.setAmount(1);
         String orderId = orderVO.getOrderId();

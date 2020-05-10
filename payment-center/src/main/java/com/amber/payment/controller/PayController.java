@@ -70,7 +70,6 @@ public class PayController {
             paymentInfoVO.setMerchantOrderId(merchantOrderId);
             paymentInfoVO.setMerchantUserId(merchantUserId);
             paymentInfoVO.setQrCodeUrl(qrCodeUrl);
-
         }
         return paymentInfoVO;
     }

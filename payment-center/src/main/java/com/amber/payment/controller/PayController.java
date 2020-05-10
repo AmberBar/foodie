@@ -58,7 +58,6 @@ public class PayController {
             if (StringUtils.isEmpty(qrCodeUrl)) {
                 // 订单总金额，单位为分
                 String total_fee = String.valueOf(waitPayOrder.getAmount());
-//				String total_fee = "1";	// 测试用 1分钱
 
                 // 统一下单
                 PreOrderResult preOrderResult = wxOrderService.placeOrder(body, out_trade_no, total_fee);

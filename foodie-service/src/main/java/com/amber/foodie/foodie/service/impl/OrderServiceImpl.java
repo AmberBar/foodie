@@ -1,5 +1,6 @@
 package com.amber.foodie.foodie.service.impl;
 
+import com.amber.foodie.common.utils.DateUtil;
 import com.amber.foodie.foodie.service.*;
 import com.amber.foodie.mapper.OrdersMapper;
 import com.amber.foodie.pojo.*;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
             // 查找主图
             ItemsImg itemsImg = itemsImgService.findMainImgByItemId(itemsSpec.getItemId());
-            String url = itemsImg != null? itemsImg.getUrl() : null;
+            String url = itemsImg != null ? itemsImg.getUrl() : null;
             if (StringUtils.isNoneBlank(url)) {
                 orderItems.setItemImg(itemsImg.getUrl());
             }
@@ -146,8 +148,26 @@ public class OrderServiceImpl implements OrderService {
         orderStatusService.update(update);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void notifyMerchantOrderPaid(String merchantOrderId) {
         updateOrderStatus(merchantOrderId, OrderStatusEnum.WAIT_DELIVER.type);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void closeOrder() {
+        // 查询未支付订单
+        List<OrderStatus> orderStatusList =
+                orderStatusService.findAllByStatus(OrderStatusEnum.WAIT_PAY.type);
+        for (OrderStatus orderStatus : orderStatusList) {
+            Date createdTime = orderStatus.getCreatedTime();
+            if (DateUtil.daysBetween(createdTime, new Date()) >= 1) {
+                //当订单时间超过一天未支付 关闭
+                orderStatus.setOrderStatus(OrderStatusEnum.CLOSE.type);
+                orderStatus.setCloseTime(new Date());
+                orderStatusService.update(orderStatus);
+            }
+        }
     }
 }

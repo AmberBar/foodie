@@ -1,4 +1,4 @@
-package com.amber.foodie.my.mapper;
+package com.amber.payment.my.mapper;
 
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;

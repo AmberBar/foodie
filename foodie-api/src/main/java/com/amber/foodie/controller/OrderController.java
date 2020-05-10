@@ -2,7 +2,6 @@ package com.amber.foodie.controller;
 
 import com.amber.foodie.common.utils.JsonResult;
 import com.amber.foodie.foodie.service.OrderService;
-import com.amber.foodie.foodie.service.PaymentService;
 import com.amber.foodie.pojo.bo.SubmitOrderBO;
 import com.amber.foodie.pojo.enums.OrderStatusEnum;
 import com.amber.foodie.pojo.enums.PayMethod;
@@ -12,8 +11,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/orders")
@@ -22,8 +23,12 @@ public class OrderController {
 
     @Autowired
     OrderService orderService;
+
     @Autowired
-    PaymentService paymentService;
+    RestTemplate restTemplate;
+
+    @Value("${payment.url}")
+    String paymentUrl;
 
     /**
      * 创建订单:
@@ -43,17 +48,31 @@ public class OrderController {
         if (submitOrderBO.getPayMethod() != PayMethod.ALIPAY.type && submitOrderBO.getPayMethod() != PayMethod.WEIXIN.type) {
             return JsonResult.errorMsg("支付方式不支持");
         }
+        // 本地创建订单
         OrderVO orderVO = orderService.createOrder(submitOrderBO);
-        String payReturnUrl = "http://hmhsb3.natappfree.cc/payment/notice/wxpay";
+//        String payReturnUrl = "http://hmhsb3.natappfree.cc/payment/notice/wxpay";
+        String payReturnUrl = paymentUrl + "/orders/create";
+
         MerchantOrdersVO merchantOrdersVO = orderVO.getMerchantOrdersVO();
         merchantOrdersVO.setReturnUrl(payReturnUrl);
         // 所有的支付金额都统一改为1分钱
         merchantOrdersVO.setAmount(1);
         String orderId = orderVO.getOrderId();
 
-        paymentService.createMerchantOrder(merchantOrdersVO);
+        // 发送给交易中心
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("appId", "wx8293dbaa6ef46dfa");
+        headers.add("appSecret", "cdf0de291eafecc7be34214ee2b5f313");
 
-        return JsonResult.ok(orderId);
+        HttpEntity<MerchantOrdersVO> requestParams = new HttpEntity<>(merchantOrdersVO, headers);
+        ResponseEntity<JsonResult> responseEntity = restTemplate.postForEntity(payReturnUrl, requestParams, JsonResult.class);
+
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            return JsonResult.errorMsg("支付中心订单创建失败");
+        } else {
+            return JsonResult.ok(orderId);
+        }
     }
 
     /**

@@ -1,5 +1,19 @@
+
+mybatis:
+  type-aliases-package: com.amber.payment.pojo #所有pojo类所在的包路径
+  mapper-locations: classpath:mapper/*.xml #mapper映射文件
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 通用mapper设置
+mapper:
+  mappers: com.amber.payment.my.mapper.MyMapper #通用mapper
+  not-empty: false #是否追加不等于'' username != null 是否追加username != ''
+  identity: MYSQL
+
+
 server:
-  port: 8088
+  port: 8089
   tomcat:
     uri-encoding: UTF-8
 
@@ -25,25 +39,9 @@ spring:
     database: 3
     host: 127.0.0.1
     post: 6379
-#    password: 123456
-#    timeout: 300
-mybatis:
-  type-aliases-package: com.amber.foodie #所有pojo类所在的包路径
-  mapper-locations: classpath:mapper/*.xml #mapper映射文件
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-# 通用mapper设置
-mapper:
-  mappers: com.amber.foodie.my.mapper.MyMapper #通用mapper
-  not-empty: false #是否追加不等于'' username != null 是否追加username != ''
-  identity: MYSQL
 logging:
   level:
     com.amber.foodie.mapper: debug
 pagehelper:
   helper-dialect: mysql
   support-methods-arguments: true
-
-payment:
-  url: http://127.0.0.1:8089

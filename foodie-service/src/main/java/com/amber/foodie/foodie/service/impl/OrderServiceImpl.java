@@ -145,4 +145,9 @@ public class OrderServiceImpl implements OrderService {
         update.setPayTime(new Date());
         orderStatusService.update(update);
     }
+
+    @Override
+    public void notifyMerchantOrderPaid(String merchantOrderId) {
+        updateOrderStatus(merchantOrderId, OrderStatusEnum.WAIT_DELIVER.type);
+    }
 }

@@ -2,7 +2,7 @@ package com.amber.foodie.controller;
 
 import com.amber.foodie.common.utils.CookieUtils;
 import com.amber.foodie.common.utils.JsonResult;
-import com.amber.foodie.common.utils.JsonUtils;
+import com.amber.foodie.common.utils.JsonUtil;
 import com.amber.foodie.foodie.service.UserService;
 import com.amber.foodie.pojo.User;
 import com.amber.foodie.pojo.bo.UserBO;
@@ -19,7 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 @Api("用户登录注册管理")
 @RestController
 @RequestMapping("/passport")
-public class PassportController {
+public class
+PassportController {
     @Autowired
     UserService userService;
 
@@ -79,7 +80,8 @@ public class PassportController {
             return JsonResult.errorMsg("用户名或者密码错误");
         }
         User userNew = setNUllProperty(user);
-        CookieUtils.setCookie(httpServletRequest, httpServletResponse, "user", JsonUtils.objectToJson(userNew), true);
+        CookieUtils.setCookie(httpServletRequest, httpServletResponse, "user",
+                JsonUtil.toJson(userNew), true);
         return JsonResult.ok(userNew);
     }
 

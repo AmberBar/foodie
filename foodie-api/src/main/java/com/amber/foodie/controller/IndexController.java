@@ -1,7 +1,7 @@
 package com.amber.foodie.controller;
 
 import com.amber.foodie.common.utils.JsonResult;
-import com.amber.foodie.common.utils.JsonUtils;
+import com.amber.foodie.common.utils.JsonUtil;
 import com.amber.foodie.common.utils.RedisUtils;
 import com.amber.foodie.foodie.service.ICarouselService;
 import com.amber.foodie.foodie.service.ICategoryService;
@@ -14,7 +14,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,13 +40,13 @@ public class IndexController {
     @GetMapping("/carousel")
     public JsonResult carousel() {
         String key = "carousel";
-        String value = redisUtils.get(key);
+        String value = redisUtils.getCacheObject(key);
         List<Carousel> list = new ArrayList<>();
         if (value == null) {
             list = carouselService.quaryAll(YesOrNo.Yes.type);
-            redisUtils.set(key, JsonUtils.objectToJson(list));
+            redisUtils.setCacheObject(key, JsonUtil.toJson(list));
         } else {
-            list = JsonUtils.jsonToList(value, Carousel.class);
+            list = JsonUtil.jsonToList(value, Carousel.class);
         }
 
         return JsonResult.ok(list);
@@ -62,13 +61,13 @@ public class IndexController {
     @GetMapping("/cats")
     public JsonResult cats() {
         String key = "cats";
-        String value = redisUtils.get(key);
+        String value = redisUtils.getCacheObject(key);
         List<Category> list = new ArrayList<>();
         if (value == null) {
             list = categoryService.queryRootLevelCat();
-            redisUtils.set(key, JsonUtils.objectToJson(list));
+            redisUtils.setCacheObject(key, JsonUtil.toJson(list));
         } else {
-            list = JsonUtils.jsonToList(value, Category.class);
+            list = JsonUtil.jsonToList(value, Category.class);
         }
 
         return JsonResult.ok(list);
@@ -81,7 +80,16 @@ public class IndexController {
         if (rootCatId == null) {
             return JsonResult.errorMsg("分类不存在");
         }
-        List<CategoryVO> list = categoryService.querySubCat(rootCatId);
+        String key = "subCat:" + rootCatId;
+        String value = redisUtils.getCacheObject(key);
+        List<CategoryVO> list = new ArrayList<>();
+        if (value == null) {
+            list = categoryService.querySubCat(rootCatId);
+            redisUtils.setCacheObject(key, JsonUtil.toJson(list));
+        } else {
+            list = JsonUtil.jsonToList(value, CategoryVO.class);
+        }
+
         return JsonResult.ok(list);
     }
 

@@ -1,220 +1,206 @@
 package com.amber.payment.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Component;
 /**
- * Redis 工具类
- */
+ * spring redis 工具类
+ *
+ * @author ruoyi
+ **/
+@SuppressWarnings(value = { "unchecked", "rawtypes" })
 @Component
 public class RedisUtils {
 
-//    @Autowired
-//    private RedisTemplate<String, String> redisTemplate;
-
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    // Key（键），简单的key-value操作
+    public RedisTemplate redisTemplate;
 
     /**
-     * 实现命令：TTL key，以秒为单位，返回给定 key的剩余生存时间(TTL, time to live)。
+     * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key
-     * @return
+     * @param key 缓存的键值
+     * @param value 缓存的值
+     * @return 缓存的对象
      */
-    public long ttl(String key) {
-        return redisTemplate.getExpire(key);
+    public <T> ValueOperations<String, T> setCacheObject(String key, T value)
+    {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        operation.set(key, value);
+        return operation;
     }
 
     /**
-     * 实现命令：expire 设置过期时间，单位秒
+     * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key
-     * @return
+     * @param key 缓存的键值
+     * @param value 缓存的值
+     * @param timeout 时间
+     * @param timeUnit 时间颗粒度
+     * @return 缓存的对象
      */
-    public void expire(String key, long timeout) {
-        redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
+    public <T> ValueOperations<String, T> setCacheObject(String key, T value, Integer timeout, TimeUnit timeUnit)
+    {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        operation.set(key, value, timeout, timeUnit);
+        return operation;
     }
 
     /**
-     * 实现命令：INCR key，增加key一次
+     * 获得缓存的基本对象。
      *
-     * @param key
-     * @return
+     * @param key 缓存键值
+     * @return 缓存键值对应的数据
      */
-    public long incr(String key, long delta) {
-        return redisTemplate.opsForValue().increment(key, delta);
+    public <T> T getCacheObject(String key)
+    {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        return operation.get(key);
     }
 
     /**
-     * 实现命令：KEYS pattern，查找所有符合给定模式 pattern的 key
-     */
-    public Set<String> keys(String pattern) {
-        return redisTemplate.keys(pattern);
-    }
-
-    /**
-     * 实现命令：DEL key，删除一个key
+     * 删除单个对象
      *
      * @param key
      */
-    public void del(String key) {
+    public void deleteObject(String key)
+    {
         redisTemplate.delete(key);
     }
 
-    // String（字符串）
-
     /**
-     * 实现命令：SET key value，设置一个key-value（将字符串值 value关联到 key）
+     * 删除集合对象
      *
-     * @param key
-     * @param value
+     * @param collection
      */
-    public void set(String key, String value) {
-        redisTemplate.opsForValue().set(key, value);
+    public void deleteObject(Collection collection)
+    {
+        redisTemplate.delete(collection);
     }
 
     /**
-     * 实现命令：SET key value EX seconds，设置key-value和超时时间（秒）
+     * 缓存List数据
      *
-     * @param key
-     * @param value
-     * @param timeout （以秒为单位）
+     * @param key 缓存的键值
+     * @param dataList 待缓存的List数据
+     * @return 缓存的对象
      */
-    public void set(String key, String value, long timeout) {
-        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 实现命令：GET key，返回 key所关联的字符串值。
-     *
-     * @param key
-     * @return value
-     */
-    public String get(String key) {
-        return (String) redisTemplate.opsForValue().get(key);
-    }
-
-    /**
-     * 批量查询，对应mget
-     *
-     * @param keys
-     * @return
-     */
-    public List<String> mget(List<String> keys) {
-        return redisTemplate.opsForValue().multiGet(keys);
-    }
-
-    /**
-     * 批量查询，管道pipeline
-     *
-     * @param keys
-     * @return
-     */
-    public List<Object> batchGet(List<String> keys) {
-        List<Object> result = redisTemplate.executePipelined(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                StringRedisConnection src = (StringRedisConnection) connection;
-
-                for (String k : keys) {
-                    src.get(k);
-                }
-                return null;
+    public <T> ListOperations<String, T> setCacheList(String key, List<T> dataList)
+    {
+        ListOperations listOperation = redisTemplate.opsForList();
+        if (null != dataList)
+        {
+            int size = dataList.size();
+            for (int i = 0; i < size; i++)
+            {
+                listOperation.leftPush(key, dataList.get(i));
             }
-        });
-
-        return result;
+        }
+        return listOperation;
     }
 
-
-    // Hash（哈希表）
-
     /**
-     * 实现命令：HSET key field value，将哈希表 key中的域 field的值设为 value
+     * 获得缓存的list对象
      *
-     * @param key
-     * @param field
-     * @param value
+     * @param key 缓存的键值
+     * @return 缓存键值对应的数据
      */
-    public void hset(String key, String field, Object value) {
-        redisTemplate.opsForHash().put(key, field, value);
+    public <T> List<T> getCacheList(String key)
+    {
+        List<T> dataList = new ArrayList<T>();
+        ListOperations<String, T> listOperation = redisTemplate.opsForList();
+        Long size = listOperation.size(key);
+
+        for (int i = 0; i < size; i++)
+        {
+            dataList.add(listOperation.index(key, i));
+        }
+        return dataList;
     }
 
     /**
-     * 实现命令：HGET key field，返回哈希表 key中给定域 field的值
+     * 缓存Set
+     *
+     * @param key 缓存键值
+     * @param dataSet 缓存的数据
+     * @return 缓存数据的对象
+     */
+    public <T> BoundSetOperations<String, T> setCacheSet(String key, Set<T> dataSet)
+    {
+        BoundSetOperations<String, T> setOperation = redisTemplate.boundSetOps(key);
+        Iterator<T> it = dataSet.iterator();
+        while (it.hasNext())
+        {
+            setOperation.add(it.next());
+        }
+        return setOperation;
+    }
+
+    /**
+     * 获得缓存的set
      *
      * @param key
-     * @param field
      * @return
      */
-    public String hget(String key, String field) {
-        return (String) redisTemplate.opsForHash().get(key, field);
+    public <T> Set<T> getCacheSet(String key)
+    {
+        Set<T> dataSet = new HashSet<T>();
+        BoundSetOperations<String, T> operation = redisTemplate.boundSetOps(key);
+        dataSet = operation.members();
+        return dataSet;
     }
 
     /**
-     * 实现命令：HDEL key field [field ...]，删除哈希表 key 中的一个或多个指定域，不存在的域将被忽略。
+     * 缓存Map
      *
      * @param key
-     * @param fields
+     * @param dataMap
+     * @return
      */
-    public void hdel(String key, Object... fields) {
-        redisTemplate.opsForHash().delete(key, fields);
+    public <T> HashOperations<String, String, T> setCacheMap(String key, Map<String, T> dataMap)
+    {
+        HashOperations hashOperations = redisTemplate.opsForHash();
+        if (null != dataMap)
+        {
+            for (Map.Entry<String, T> entry : dataMap.entrySet())
+            {
+                hashOperations.put(key, entry.getKey(), entry.getValue());
+            }
+        }
+        return hashOperations;
     }
 
     /**
-     * 实现命令：HGETALL key，返回哈希表 key中，所有的域和值。
+     * 获得缓存的Map
      *
      * @param key
      * @return
      */
-    public Map<Object, Object> hgetall(String key) {
-        return redisTemplate.opsForHash().entries(key);
-    }
-
-    // List（列表）
-
-    /**
-     * 实现命令：LPUSH key value，将一个值 value插入到列表 key的表头
-     *
-     * @param key
-     * @param value
-     * @return 执行 LPUSH命令后，列表的长度。
-     */
-    public long lpush(String key, String value) {
-        return redisTemplate.opsForList().leftPush(key, value);
+    public <T> Map<String, T> getCacheMap(String key)
+    {
+        Map<String, T> map = redisTemplate.opsForHash().entries(key);
+        return map;
     }
 
     /**
-     * 实现命令：LPOP key，移除并返回列表 key的头元素。
+     * 获得缓存的基本对象列表
      *
-     * @param key
-     * @return 列表key的头元素。
+     * @param pattern 字符串前缀
+     * @return 对象列表
      */
-    public String lpop(String key) {
-        return (String) redisTemplate.opsForList().leftPop(key);
+    public Collection<String> keys(String pattern)
+    {
+        return redisTemplate.keys(pattern);
     }
-
-    /**
-     * 实现命令：RPUSH key value，将一个值 value插入到列表 key的表尾(最右边)。
-     *
-     * @param key
-     * @param value
-     * @return 执行 LPUSH命令后，列表的长度。
-     */
-    public long rpush(String key, String value) {
-        return redisTemplate.opsForList().rightPush(key, value);
-    }
-
 }

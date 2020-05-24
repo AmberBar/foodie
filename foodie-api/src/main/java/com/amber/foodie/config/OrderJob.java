@@ -16,9 +16,9 @@ public class OrderJob {
     /**
      * TODO 换成rabbirmq
      */
-    @Scheduled(cron = "0/3 * * * * ? ")
-    public void closeOrder() {
-        log.info("==========执行定时任务================");
-        orderService.closeOrder();
-    }
+//    @Scheduled(cron = "0/3 * * * * ? ")
+//    public void closeOrder() {
+//        log.info("==========执行定时任务================");
+//        orderService.closeOrder();
+//    }
 }

@@ -3,30 +3,6 @@ server:
   tomcat:
     uri-encoding: UTF-8
 
-spring:
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource # 数据源类型: HikariCP
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    #      com.mysql.jdbc.DriverApiApplication
-    url: jdbc:mysql://localhost:3306/foodie?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=GMT%2B8&useSSL=false
-    username: root
-    password: root
-    hikari:
-      connection-timeout: 30000 #等待连接池分配连接的最大时长, 30秒
-      minimum-idle: 2 # 最小连接数
-      maximum-pool-size: 10 #最大连接数
-      auto-commit: true #自动提交
-      idle-timeout: 600000 # 连接超时的最大时长(毫秒),超时被释放,默认10分钟
-      pool-name: DataSourceHikariCP #连接池名字
-      max-lifetime: 600000 #连接的生命时长，超时而且没有被使用则会被释放, 默认30分钟
-      connection-test-query: SELECT 1 #测试连接
-  redis:
-    # redis数据库索引(默认为0)，我们使用索引为3的数据库，避免和其他数据库冲突
-    database: 3
-    host: 127.0.0.1
-    post: 6379
-#    password: 123456
-#    timeout: 300
 mybatis:
   type-aliases-package: com.amber.foodie #所有pojo类所在的包路径
   mapper-locations: classpath:mapper/*.xml #mapper映射文件
@@ -47,3 +23,6 @@ pagehelper:
 
 payment:
   url: http://127.0.0.1:8089
+spring:
+  profiles:
+    active: local

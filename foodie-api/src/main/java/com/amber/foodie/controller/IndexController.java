@@ -1,6 +1,8 @@
 package com.amber.foodie.controller;
 
 import com.amber.foodie.common.utils.JsonResult;
+import com.amber.foodie.common.utils.JsonUtils;
+import com.amber.foodie.common.utils.RedisUtils;
 import com.amber.foodie.foodie.service.ICarouselService;
 import com.amber.foodie.foodie.service.ICategoryService;
 import com.amber.foodie.pojo.Carousel;
@@ -12,17 +14,22 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "首页接口", tags = {"首页接口"})
 @RestController
 @RequestMapping("/index")
 public class IndexController {
+
+    @Autowired
+    RedisUtils redisUtils;
 
     @Autowired
     private ICarouselService carouselService;
@@ -33,7 +40,16 @@ public class IndexController {
     @ApiOperation(value = "获取轮播图", notes = "获取轮播图", httpMethod = "GET")
     @GetMapping("/carousel")
     public JsonResult carousel() {
-        List<Carousel> list = carouselService.quaryAll(YesOrNo.Yes.type);
+        String key = "carousel";
+        String value = redisUtils.get(key);
+        List<Carousel> list = new ArrayList<>();
+        if (value == null) {
+            list = carouselService.quaryAll(YesOrNo.Yes.type);
+            redisUtils.set(key, JsonUtils.objectToJson(list));
+        } else {
+            list = JsonUtils.jsonToList(value, Carousel.class);
+        }
+
         return JsonResult.ok(list);
     }
 
@@ -45,7 +61,16 @@ public class IndexController {
     @ApiOperation(value = "获取商品分类（一级分类）", notes = "获取商品分类（一级分类）", httpMethod = "GET")
     @GetMapping("/cats")
     public JsonResult cats() {
-        List<Category> list = categoryService.queryRootLevelCat();
+        String key = "cats";
+        String value = redisUtils.get(key);
+        List<Category> list = new ArrayList<>();
+        if (value == null) {
+            list = categoryService.queryRootLevelCat();
+            redisUtils.set(key, JsonUtils.objectToJson(list));
+        } else {
+            list = JsonUtils.jsonToList(value, Category.class);
+        }
+
         return JsonResult.ok(list);
     }
 

@@ -1,10 +1,13 @@
 package com.amber.foodie.controller;
 
+import com.amber.foodie.common.constant.Constant;
 import com.amber.foodie.common.utils.CookieUtils;
 import com.amber.foodie.common.utils.JsonResult;
 import com.amber.foodie.common.utils.JsonUtil;
+import com.amber.foodie.common.utils.RedisUtils;
 import com.amber.foodie.foodie.service.UserService;
 import com.amber.foodie.pojo.User;
+import com.amber.foodie.pojo.bo.ShopcartBO;
 import com.amber.foodie.pojo.bo.UserBO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Api("用户登录注册管理")
 @RestController
@@ -23,6 +31,9 @@ public class
 PassportController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     @ApiOperation(value = "判断用户名是否存在", httpMethod = "GET")
     @GetMapping("/usernameIsExist")
@@ -61,6 +72,11 @@ PassportController {
 
 
     /**
+     * 1.
+     *
+     * @param userBO
+     * @param httpServletRequest
+     * @param httpServletResponse
      * @return
      */
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
@@ -82,6 +98,50 @@ PassportController {
         User userNew = setNUllProperty(user);
         CookieUtils.setCookie(httpServletRequest, httpServletResponse, "user",
                 JsonUtil.toJson(userNew), true);
+
+        //TODO 生成用户token 存入redis会话
+        //TODO 同步购物车数据
+        String cookieValue = CookieUtils.getCookieValue(httpServletRequest, Constant.FOOID_SHOPCART);
+
+        String key = Constant.FOOID_SHOPCART + Constant.COLOL + user.getId();
+        String redisValue = redisUtils.getCacheObject(key);
+
+        /**
+         * 1. cookie和redis都為空，不操作
+         * 2. cookie為空，redis不为null, 把redis中的数据刷新到cookie
+         */
+
+        if (StringUtils.isBlank(redisValue)) {
+            // redis为空, cookie为空
+            if (StringUtils.isNotBlank(cookieValue)) {
+                redisUtils.set(key, cookieValue);
+            }
+        } else {
+            // redis不为空，cookie不为空, 合并cookie和redis中的数据, 如果specId一致以cookie为准
+            if (StringUtils.isNotBlank(cookieValue)) {
+                List<ShopcartBO> shopcartBOSFromCookie = JsonUtil.jsonToList(cookieValue, ShopcartBO.class);
+                List<ShopcartBO> shopcartBOSFromRedis = JsonUtil.jsonToList(redisValue, ShopcartBO.class);
+                shopcartBOSFromCookie.addAll(shopcartBOSFromRedis);
+                List<ShopcartBO> list = new ArrayList<>();
+                Map<String, List<ShopcartBO>> collect = shopcartBOSFromCookie.stream().collect(Collectors.groupingBy(ShopcartBO::getSpecId));
+                Set<String> keys = collect.keySet();
+                for (String s : keys) {
+                    List<ShopcartBO> shopcartBOS = collect.get(key);
+                    if (shopcartBOS.size() >= 1) {
+                        ShopcartBO shopcartBO = shopcartBOS.get(1);
+                        shopcartBO.setBuyCounts(shopcartBOS.stream().mapToInt(ShopcartBO::getBuyCounts).sum());
+                        list.add(shopcartBO);
+                    }
+                }
+                redisUtils.set(key, list);
+            } else {
+                // redis not null , cookie null 覆盖cookie
+                CookieUtils.setCookie(httpServletRequest,
+                        httpServletResponse,
+                        Constant.FOOID_SHOPCART,
+                        redisValue, true);
+            }
+        }
         return JsonResult.ok(userNew);
     }
 

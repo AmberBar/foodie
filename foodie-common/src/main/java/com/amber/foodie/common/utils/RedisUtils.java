@@ -96,6 +96,24 @@ public class RedisUtils {
     }
 
     /**
+     * 获得缓存的基本对象。
+     *
+     * @param key 缓存键值
+     * @return 缓存键值对应的数据
+     */
+    public <T> T get(String key) {
+        ValueOperations<String, T> operation = null;
+        T result = null;
+        try {
+            operation = redisTemplate.opsForValue();
+            result = operation.get(key);
+        } catch (Exception e) {
+            log.error("操作redis失败", e);
+        }
+        return result;
+    }
+
+    /**
      * 删除单个对象
      *
      * @param key

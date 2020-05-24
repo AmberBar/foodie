@@ -36,3 +36,9 @@ pageResult.setRows(list);
 ```
 ## 内网穿刺
 [https://natapp.cn/article/natapp_newbie](https://natapp.cn/article/natapp_newbie)
+
+## redis
+使用redis-cli查看数据时乱码的解决办法
+```java
+redis-cli --raw
+```

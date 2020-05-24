@@ -1,9 +1,13 @@
 package com.amber.foodie.foodie.service.impl;
 
+import com.amber.foodie.common.constant.Constant;
 import com.amber.foodie.common.utils.DateUtil;
+import com.amber.foodie.common.utils.JsonUtil;
+import com.amber.foodie.common.utils.RedisUtils;
 import com.amber.foodie.foodie.service.*;
 import com.amber.foodie.mapper.OrdersMapper;
 import com.amber.foodie.pojo.*;
+import com.amber.foodie.pojo.bo.ShopcartBO;
 import com.amber.foodie.pojo.bo.SubmitOrderBO;
 import com.amber.foodie.pojo.enums.OrderStatusEnum;
 import com.amber.foodie.pojo.enums.YesOrNo;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +47,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderStatusService orderStatusService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     /**
      * 创建订单
@@ -76,9 +84,17 @@ public class OrderServiceImpl implements OrderService {
         String[] itemsSpecIds = itemSpecIds.split(",");
         Integer totalAmount = 0;    // 商品原价累计
         Integer realPayAmount = 0;  // 优惠后的实际支付价格累计
+        String key = Constant.FOOID_SHOPCART + Constant.COLOL + userId;
+        String value = redisUtils.getCacheObject(key);
+        List<ShopcartBO> shopcartBOS = JsonUtil.jsonToList(value, ShopcartBO.class);
+        // 需要从购物车删除的数据
+        List<ShopcartBO> needBeRemove = new ArrayList<>();
         for (String itemsSpecId : itemsSpecIds) {
-            // TODO 整合redis 商品数量会从redis中获取
-            int buyCounts = 1;
+
+            // 整合redis 商品数量会从redis中获取
+            ShopcartBO buyCountsFtomShopCart = getBuyCountsFtomShopCart(shopcartBOS, itemsSpecId);
+            int buyCounts = buyCountsFtomShopCart.getBuyCounts();
+            needBeRemove.add(buyCountsFtomShopCart);
             ItemsSpec itemsSpec = itemsSpecService.findById(itemsSpecId);
             OrderItems orderItems = new OrderItems();
             String orderItemsId = UUID.randomUUID().toString();
@@ -136,6 +152,10 @@ public class OrderServiceImpl implements OrderService {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderId(orderId);
         orderVO.setMerchantOrdersVO(merchantOrdersVO);
+
+        shopcartBOS.removeAll(needBeRemove);
+        // 刷新缓存
+        redisUtils.setCacheObject(key, JsonUtil.toJson(shopcartBOS));
         return orderVO;
     }
 
@@ -169,5 +189,14 @@ public class OrderServiceImpl implements OrderService {
                 orderStatusService.update(orderStatus);
             }
         }
+    }
+
+    private ShopcartBO getBuyCountsFtomShopCart(List<ShopcartBO> shopcartBOS, String specId) {
+        for (ShopcartBO shopcartBO : shopcartBOS) {
+            if (shopcartBO.getSpecId().equals(specId)) {
+                return shopcartBO;
+            }
+        }
+        return null;
     }
 }

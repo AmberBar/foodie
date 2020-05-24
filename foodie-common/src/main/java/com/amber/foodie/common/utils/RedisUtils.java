@@ -39,6 +39,26 @@ public class RedisUtils {
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
+     * @param key   缓存的键值
+     * @param value 缓存的值
+     * @return 缓存的对象
+     */
+    public <T> ValueOperations<String, T> set(String key, T value) {
+        ValueOperations<String, T> operation = null;
+        try {
+            String s = JsonUtil.toJson(value);
+            operation = redisTemplate.opsForValue();
+            operation.set(key, value);
+        } catch (Exception e) {
+            log.error("操作redis失败", e);
+            operation = null;
+        }
+        return operation;
+    }
+
+    /**
+     * 缓存基本的对象，Integer、String、实体类等
+     *
      * @param key      缓存的键值
      * @param value    缓存的值
      * @param timeout  时间
@@ -113,10 +133,7 @@ public class RedisUtils {
         try {
             listOperation = redisTemplate.opsForList();
             if (null != dataList) {
-                int size = dataList.size();
-                for (int i = 0; i < size; i++) {
-                    listOperation.leftPush(key, dataList.get(i));
-                }
+                listOperation.leftPushAll(key, dataList);
             }
         } catch (Exception e) {
             log.error("操作redis失败", e);

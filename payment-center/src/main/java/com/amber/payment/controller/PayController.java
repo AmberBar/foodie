@@ -53,7 +53,7 @@ public class PayController {
         // 从redis中去获得这笔订单的微信支付二维码，如果订单状态没有支付没有就放入，这样的做法防止用户频繁刷新而调用微信接口
         if (waitPayOrder != null) {
             String key = wxPayResource.getQrcodeKey() + ":" + merchantOrderId;
-            String qrCodeUrl = redisUtils.get(key);
+            String qrCodeUrl = redisUtils.getCacheObject(key);
 
             if (StringUtils.isEmpty(qrCodeUrl)) {
                 // 订单总金额，单位为分
@@ -62,7 +62,7 @@ public class PayController {
                 // 统一下单
                 PreOrderResult preOrderResult = wxOrderService.placeOrder(body, out_trade_no, total_fee);
                 qrCodeUrl = preOrderResult.getCode_url();
-                redisUtils.set(key, qrCodeUrl);
+                redisUtils.setCacheObject(key, qrCodeUrl);
             }
 
             paymentInfoVO.setAmount(waitPayOrder.getAmount());

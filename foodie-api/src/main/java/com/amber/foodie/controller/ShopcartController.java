@@ -57,9 +57,9 @@ public class ShopcartController {
         List<ShopcartBO> shopcartBOList = new ArrayList<>();
         if (StringUtils.isNotBlank(value)) {
             // redis有购物车
-            shopcartBOList = JsonUtil.jsonToList(value, ShopcartBO.class);
             // 判断购物车是否包含当前商品规格, 包含就增加count,不包含就新增
             boolean isContains = false;
+            shopcartBOList = JsonUtil.jsonToList(value, ShopcartBO.class);
             for (ShopcartBO shopcart : shopcartBOList) {
                 if (shopcart.getSpecId().equals(shopcartBo.getSpecId())) {
                     shopcart.setBuyCounts(shopcartBo.getBuyCounts() + shopcart.getBuyCounts());
@@ -70,6 +70,7 @@ public class ShopcartController {
                 shopcartBOList.add(shopcartBo);
             }
         } else {
+            shopcartBOList = new ArrayList<>();
             // redis中没有购物车
             shopcartBOList.add(shopcartBo);
         }
@@ -78,4 +79,39 @@ public class ShopcartController {
         redisUtils.setCacheObject(key, JsonUtil.toJson(shopcartBOList));
         return JsonResult.ok();
     }
+
+    /**
+     * 前端用户在登陆的情况下，用户在页面删除购物车中商品，会同时在后端同步删除购物车
+     * @param userId
+     * @param itemSpecId
+     * @param request
+     * @param response
+     * @return
+     */
+    @ApiOperation(value = "从购物车删除商品", notes = "从购物车删除商品", httpMethod = "POST")
+    @PostMapping("/del")
+    public JsonResult del(
+            @RequestParam String userId, @RequestParam String itemSpecId, HttpServletRequest request, HttpServletResponse response) {
+        if(StringUtils.isBlank(userId)||StringUtils.isBlank(itemSpecId)){
+            return JsonResult.errorMsg("参数不能为空");
+        }
+
+        String key = Constant.FOOID_SHOPCART + Constant.COLOL + userId;
+
+        String value = redisUtils.getCacheObject(key);
+        if (StringUtils.isBlank(value)) {
+            return JsonResult.errorMsg("参数错误");
+        }
+
+        List<ShopcartBO> shopcartBOS = JsonUtil.jsonToList(value, ShopcartBO.class);
+        for (ShopcartBO shopcartBO : shopcartBOS) {
+            if (shopcartBO.getSpecId().equals(itemSpecId)) {
+                shopcartBOS.remove(shopcartBO);
+                break;
+            }
+        }
+        redisUtils.set(key, JsonUtil.toJson(shopcartBOS));
+        return JsonResult.ok();
+    }
+
 }

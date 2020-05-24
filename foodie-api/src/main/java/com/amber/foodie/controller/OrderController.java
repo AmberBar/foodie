@@ -1,20 +1,28 @@
 package com.amber.foodie.controller;
 
+import com.amber.foodie.common.constant.Constant;
+import com.amber.foodie.common.utils.CookieUtils;
 import com.amber.foodie.common.utils.JsonResult;
+import com.amber.foodie.common.utils.RedisUtils;
 import com.amber.foodie.foodie.service.OrderService;
 import com.amber.foodie.pojo.bo.SubmitOrderBO;
 import com.amber.foodie.pojo.enums.OrderStatusEnum;
 import com.amber.foodie.pojo.enums.PayMethod;
 import com.amber.foodie.pojo.vo.MerchantOrdersVO;
 import com.amber.foodie.pojo.vo.OrderVO;
+import com.sun.deploy.net.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Contact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/orders")
@@ -43,11 +51,14 @@ public class OrderController {
     @PostMapping("/create")
     public JsonResult add(
             @ApiParam(name = "submitOrderBO", value = "提交订单数据", required = true)
-            @RequestBody SubmitOrderBO submitOrderBO
+            @RequestBody SubmitOrderBO submitOrderBO,
+            HttpServletRequest request,
+            HttpServletResponse response
     ) throws Exception {
         if (submitOrderBO.getPayMethod() != PayMethod.ALIPAY.type && submitOrderBO.getPayMethod() != PayMethod.WEIXIN.type) {
             return JsonResult.errorMsg("支付方式不支持");
         }
+
         // 本地创建订单
         OrderVO orderVO = orderService.createOrder(submitOrderBO);
         String payReturnUrl = paymentUrl + "/orders/create";
@@ -60,6 +71,9 @@ public class OrderController {
         merchantOrdersVO.setAmount(1);
         String orderId = orderVO.getOrderId();
 
+        //整合redis，完善购物车中已结算商品清除，并且同步到前端cookie
+
+        CookieUtils.setCookie(request, response, Constant.FOOID_SHOPCART, "");
         // 发送给交易中心
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

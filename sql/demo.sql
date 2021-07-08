@@ -1,0 +1,1 @@
+INSERT INTO `foodie`.`items_comments` (`id`, `user_id`, `item_id`, `item_name`, `item_spec_id`, `sepc_name`, `comment_level`, `content`, `created_time`, `updated_time`) VALUES ('cake-1002', '26cb08b7-2648-43d6-b121-061dca8bf291', 'cake-1002', '【天天吃货】进口美食凤梨酥', '1', 's', '1', '好吃', '2020-04-25 22:23:14', '2020-04-25 22:23:14');

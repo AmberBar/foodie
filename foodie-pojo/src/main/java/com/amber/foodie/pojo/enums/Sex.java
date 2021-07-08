@@ -1,9 +1,9 @@
-package com.amber.foodie.common.enums;
+package com.amber.foodie.pojo.enums;
 
 public enum Sex {
-    FEMALE(0, "female"),
-    MALE(1, "male"),
-    SECRET(2, "secret");
+    MAN(1, "男"),
+    WOMAN(0, "女"),
+    SECRET(2, "保密");
     public final Integer type;
     public final String value;
 
@@ -11,5 +11,4 @@ public enum Sex {
         this.type = type;
         this.value = value;
     }
-
 }

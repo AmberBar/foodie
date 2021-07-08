@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amber.foodie.mapper.customer.ItemsCommentsCustomerMapper">
+    <select id="queryItemComments" resultType="com.amber.foodie.pojo.vo.CommentVO" parameterType="map">
+        SELECT
+        ic.comment_level AS commentLevel,
+        ic.content AS content,
+        ic.sepc_name AS specName,
+        ic.created_time AS createdTime,
+        u.face AS userFace,
+        u.nickname AS nickname
+        FROM items_comments ic
+        INNER JOIN user u
+        ON ic.user_id = u.id
+        WHERE ic.item_id = #{paramMap.itemId}
+        <if test="paramMap.level != null and paramMap.level != ''">
+            AND ic.comment_level = #{paramMap.level}
+        </if>
+    </select>
+</mapper>
